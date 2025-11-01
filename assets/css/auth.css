@@ -121,10 +121,11 @@ body {
 .auth-right {
     background: var(--bg-primary);
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     padding: 30px;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .auth-right::-webkit-scrollbar {

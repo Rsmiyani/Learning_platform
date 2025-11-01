@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,6 +8,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - TrainAI</title>
     <link rel="stylesheet" href="assets/css/auth.css">
+    <style>
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border: 1px solid #fcc;
+            font-size: 14px;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+            font-size: 14px;
+        }
+    </style>
 </head>
 <body>
     <div class="auth-container">
@@ -45,6 +69,17 @@
                     <h2>Welcome Back</h2>
                     <p>Login to access your training dashboard</p>
                 </div>
+
+                <?php
+                if (isset($_SESSION['error'])) {
+                    echo '<div class="error-message">' . htmlspecialchars($_SESSION['error']) . '</div>';
+                    unset($_SESSION['error']);
+                }
+                if (isset($_SESSION['success'])) {
+                    echo '<div class="success-message">' . htmlspecialchars($_SESSION['success']) . '</div>';
+                    unset($_SESSION['success']);
+                }
+                ?>
 
                 <form action="process_login.php" method="POST" class="auth-form">
                     <div class="form-group">

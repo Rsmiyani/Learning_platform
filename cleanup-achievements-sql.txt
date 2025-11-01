@@ -1,0 +1,29 @@
+-- SQL Script to Remove Duplicate Achievements
+-- Run this in phpMyAdmin SQL tab
+
+-- Step 1: Create a temporary table with unique achievements (keep earliest)
+CREATE TEMPORARY TABLE temp_keep_achievements AS
+SELECT MIN(user_achievement_id) as keep_id
+FROM user_achievements
+GROUP BY user_id, achievement_id;
+
+-- Step 2: Delete all achievements that are NOT in the keep list
+DELETE FROM user_achievements
+WHERE user_achievement_id NOT IN (
+    SELECT keep_id FROM temp_keep_achievements
+);
+
+-- Step 3: Verify the cleanup
+SELECT 
+    u.first_name,
+    u.last_name,
+    a.achievement_name,
+    ua.earned_at,
+    COUNT(*) as count
+FROM user_achievements ua
+JOIN users u ON ua.user_id = u.user_id
+JOIN achievements a ON ua.achievement_id = a.achievement_id
+GROUP BY ua.user_id, ua.achievement_id
+ORDER BY u.user_id, ua.earned_at;
+
+-- You should see count = 1 for all achievements (no duplicates)

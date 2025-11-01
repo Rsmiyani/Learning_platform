@@ -73,6 +73,17 @@ try {
     ");
     
     $stmt->execute([$first_name, $last_name, $email, $hashed_password, $role]);
+    $user_id = $pdo->lastInsertId();
+    
+    // Save interests for trainees
+    if ($role === 'trainee' && isset($_POST['interests']) && is_array($_POST['interests'])) {
+        $interests = $_POST['interests'];
+        
+        foreach ($interests as $interest) {
+            $stmt = $pdo->prepare("INSERT INTO user_interests (user_id, interest_name) VALUES (?, ?)");
+            $stmt->execute([$user_id, trim($interest)]);
+        }
+    }
     
     // Success
     $_SESSION['success'] = "Registration successful! Please login.";

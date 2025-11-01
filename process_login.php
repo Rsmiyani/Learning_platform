@@ -65,11 +65,27 @@ try {
     $_SESSION['role'] = $user['role'];
     $_SESSION['logged_in'] = true;
     
-    // Remember me functionality (optional - for later)
+    // Remember me functionality
     if ($remember) {
-        // Set cookie for 30 days
+        // Generate secure token
         $token = bin2hex(random_bytes(32));
-        setcookie('remember_token', $token, time() + (86400 * 30), "/");
+        $token_hash = hash('sha256', $token);
+        $expiry = date('Y-m-d H:i:s', strtotime('+30 days'));
+        
+        // Store token in database
+        try {
+            $stmt = $pdo->prepare("
+                INSERT INTO remember_tokens (user_id, token_hash, expires_at, created_at)
+                VALUES (?, ?, ?, NOW())
+            ");
+            $stmt->execute([$user['user_id'], $token_hash, $expiry]);
+            
+            // Set cookie for 30 days
+            setcookie('remember_token', $token, time() + (86400 * 30), "/", "", false, true);
+        } catch (PDOException $e) {
+            error_log("Remember token error: " . $e->getMessage());
+            // Continue login even if remember me fails
+        }
     }
     
     // Redirect based on role
