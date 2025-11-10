@@ -1,5 +1,6 @@
 <?php
 require_once 'config/database.php';
+require_once 'config/email.php';
 initSession();
 
 // Check if form is submitted
@@ -12,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $first_name = trim($_POST['first_name'] ?? '');
 $last_name = trim($_POST['last_name'] ?? '');
 $email = trim($_POST['email'] ?? '');
-$role = trim($_POST['role'] ?? '');
+$role = 'trainee'; // Always set as trainee - users can request trainer role later
 $password = $_POST['password'] ?? '';
 $confirm_password = $_POST['confirm_password'] ?? '';
 
@@ -29,10 +30,6 @@ if (empty($last_name)) {
 
 if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $errors[] = "Valid email is required";
-}
-
-if (empty($role) || !in_array($role, ['trainee', 'trainer', 'admin'])) {
-    $errors[] = "Please select a valid role";
 }
 
 if (empty($password) || strlen($password) < 6) {
@@ -73,9 +70,30 @@ try {
     ");
     
     $stmt->execute([$first_name, $last_name, $email, $hashed_password, $role]);
+    $user_id = $pdo->lastInsertId();
+    
+    // Save interests for trainees
+    if ($role === 'trainee' && isset($_POST['interests']) && is_array($_POST['interests'])) {
+        $interests = $_POST['interests'];
+        
+        foreach ($interests as $interest) {
+            $stmt = $pdo->prepare("INSERT INTO user_interests (user_id, interest_name) VALUES (?, ?)");
+            $stmt->execute([$user_id, trim($interest)]);
+        }
+    }
+    
+    // Send welcome email
+    $mailer = getMailer();
+    $email_sent = $mailer->sendWelcomeEmail($email, $first_name, ucfirst($role));
+    
+    if ($email_sent) {
+        error_log("Welcome email sent successfully to: " . $email);
+    } else {
+        error_log("Failed to send welcome email to: " . $email);
+    }
     
     // Success
-    $_SESSION['success'] = "Registration successful! Please login.";
+    $_SESSION['success'] = "Registration successful! Please check your email and login.";
     header('Location: login.php');
     exit;
     

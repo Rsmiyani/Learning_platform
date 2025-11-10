@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,6 +8,93 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - TrainAI</title>
     <link rel="stylesheet" href="assets/css/auth.css">
+    <style>
+        /* Additional styles for register page */
+        .auth-form-container {
+            padding-top: 20px;
+            padding-bottom: 60px;
+        }
+        
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border: 1px solid #fcc;
+            font-size: 14px;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+            font-size: 14px;
+        }
+        
+        /* Custom scrollbar */
+        .auth-right::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .auth-right::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        .auth-right::-webkit-scrollbar-thumb {
+            background: #6B5B95;
+            border-radius: 4px;
+        }
+        
+        .auth-right::-webkit-scrollbar-thumb:hover {
+            background: #5a4a7f;
+        }
+        
+        .interest-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        .interest-checkbox:hover {
+            border-color: #6B5B95;
+            background: #f9fafb;
+        }
+        
+        .interest-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .interest-checkbox input[type="checkbox"]:checked + span {
+            font-weight: 600;
+            color: #6B5B95;
+        }
+        
+        .interest-checkbox input[type="checkbox"]:checked {
+            accent-color: #6B5B95;
+        }
+        
+        .interest-checkbox span {
+            font-size: 14px;
+            color: #374151;
+        }
+        
+        /* Smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
 </head>
 <body>
     <div class="auth-container">
@@ -46,6 +136,17 @@
                     <p>Start your learning journey today</p>
                 </div>
 
+                <?php
+                if (isset($_SESSION['error'])) {
+                    echo '<div class="error-message">' . htmlspecialchars($_SESSION['error']) . '</div>';
+                    unset($_SESSION['error']);
+                }
+                if (isset($_SESSION['success'])) {
+                    echo '<div class="success-message">' . htmlspecialchars($_SESSION['success']) . '</div>';
+                    unset($_SESSION['success']);
+                }
+                ?>
+
                 <form action="process_register.php" method="POST" class="auth-form">
                     <div class="form-row">
                         <div class="form-group">
@@ -81,15 +182,7 @@
                         >
                     </div>
 
-                    <div class="form-group">
-                        <label for="role">I am a</label>
-                        <select id="role" name="role" required>
-                            <option value="">Select your role</option>
-                            <option value="trainee">Trainee</option>
-                            <option value="trainer">Trainer</option>
-                            <option value="admin">Administrator</option>
-                        </select>
-                    </div>
+                    <input type="hidden" name="role" value="trainee">
 
                     <div class="form-group">
                         <label for="password">Password</label>
@@ -111,6 +204,69 @@
                             placeholder="Confirm your password"
                             required
                         >
+                    </div>
+
+                    <div class="form-group" id="interests-section" style="display: none;">
+                        <label>Select Your Interests (Choose at least 3)</label>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px;">
+                            <label class="interest-checkbox">
+                                <input type="checkbox" name="interests[]" value="Web Development">
+                                <span>💻 Web Development</span>
+                            </label>
+                            <label class="interest-checkbox">
+                                <input type="checkbox" name="interests[]" value="Data Structures & Algorithms">
+                                <span>🧮 DSA</span>
+                            </label>
+                            <label class="interest-checkbox">
+                                <input type="checkbox" name="interests[]" value="C++ Programming">
+                                <span>⚙️ C++</span>
+                            </label>
+                            <label class="interest-checkbox">
+                                <input type="checkbox" name="interests[]" value="Python Programming">
+                                <span>🐍 Python</span>
+                            </label>
+                            <label class="interest-checkbox">
+                                <input type="checkbox" name="interests[]" value="Java Programming">
+                                <span>☕ Java</span>
+                            </label>
+                            <label class="interest-checkbox">
+                                <input type="checkbox" name="interests[]" value="Machine Learning">
+                                <span>🤖 Machine Learning</span>
+                            </label>
+                            <label class="interest-checkbox">
+                                <input type="checkbox" name="interests[]" value="Data Science">
+                                <span>📊 Data Science</span>
+                            </label>
+                            <label class="interest-checkbox">
+                                <input type="checkbox" name="interests[]" value="Mobile Development">
+                                <span>📱 Mobile Dev</span>
+                            </label>
+                            <label class="interest-checkbox">
+                                <input type="checkbox" name="interests[]" value="Cloud Computing">
+                                <span>☁️ Cloud Computing</span>
+                            </label>
+                            <label class="interest-checkbox">
+                                <input type="checkbox" name="interests[]" value="Cybersecurity">
+                                <span>🔒 Cybersecurity</span>
+                            </label>
+                            <label class="interest-checkbox">
+                                <input type="checkbox" name="interests[]" value="DevOps">
+                                <span>🔧 DevOps</span>
+                            </label>
+                            <label class="interest-checkbox">
+                                <input type="checkbox" name="interests[]" value="UI/UX Design">
+                                <span>🎨 UI/UX Design</span>
+                            </label>
+                            <label class="interest-checkbox">
+                                <input type="checkbox" name="interests[]" value="Database Management">
+                                <span>🗄️ Databases</span>
+                            </label>
+                            <label class="interest-checkbox">
+                                <input type="checkbox" name="interests[]" value="Artificial Intelligence">
+                                <span>🧠 AI</span>
+                            </label>
+                        </div>
+                        <p style="margin-top: 10px; font-size: 12px; color: #6b7280;">Select at least 3 interests to get personalized course recommendations</p>
                     </div>
 
                     <div class="form-options">
@@ -155,5 +311,23 @@
             </div>
         </div>
     </div>
+    
+    <script>
+        // Show interests section for all users (all are trainees)
+        document.addEventListener('DOMContentLoaded', function() {
+            const interestsSection = document.getElementById('interests-section');
+            interestsSection.style.display = 'block';
+        });
+        
+        // Validate at least 3 interests selected
+        document.querySelector('.auth-form').addEventListener('submit', function(e) {
+            const checkedInterests = document.querySelectorAll('input[name="interests[]"]:checked');
+            if (checkedInterests.length < 3) {
+                e.preventDefault();
+                alert('Please select at least 3 interests to continue.');
+                return false;
+            }
+        });
+    </script>
 </body>
 </html>

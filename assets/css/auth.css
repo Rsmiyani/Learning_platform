@@ -16,6 +16,8 @@
     --border-color: #E8E4D9;
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
     --shadow-md: 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.08);
+    --ring: 0 0 0 3px rgba(26, 26, 26, 0.05);
 }
 
 body {
@@ -121,10 +123,11 @@ body {
 .auth-right {
     background: var(--bg-primary);
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     padding: 30px;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .auth-right::-webkit-scrollbar {
@@ -138,7 +141,19 @@ body {
 
 .auth-form-container {
     width: 100%;
-    max-width: 420px;
+    max-width: 440px;
+    background: rgba(253, 252, 250, 0.9);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    box-shadow: var(--shadow-lg);
+    padding: 28px;
+    backdrop-filter: saturate(1.1) blur(6px);
+    animation: fadeUp 420ms ease-out;
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .form-header {
@@ -180,20 +195,21 @@ body {
 .form-group input,
 .form-group select {
     width: 100%;
-    padding: 10px 14px;
+    padding: 12px 14px;
     font-size: 14px;
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
     border-radius: 6px;
     transition: all 0.3s;
     font-family: inherit;
+    box-shadow: var(--shadow-sm);
 }
 
 .form-group input:focus,
 .form-group select:focus {
     outline: none;
     border-color: var(--text-primary);
-    box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.05);
+    box-shadow: var(--ring), var(--shadow-sm);
 }
 
 .form-group select {
@@ -245,17 +261,24 @@ body {
     font-size: 15px;
     font-weight: 600;
     color: white;
-    background: var(--text-primary);
+    background: linear-gradient(180deg, #1a1a1a, #111111);
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s;
     font-family: inherit;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
 }
 
 .btn-submit:hover {
-    background: var(--primary-dark);
+    background: linear-gradient(180deg, #111111, #000000);
     transform: translateY(-1px);
+    box-shadow: 0 10px 22px rgba(0,0,0,0.16);
+}
+
+.btn-submit:active {
+    transform: translateY(0);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
 }
 
 .form-divider {
@@ -290,19 +313,27 @@ body {
     align-items: center;
     justify-content: center;
     gap: 6px;
-    padding: 10px;
+    padding: 12px;
     font-size: 13px;
     font-weight: 500;
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s;
     font-family: inherit;
+    text-decoration: none;
+    color: var(--text-primary);
+    box-sizing: border-box;
+    box-shadow: var(--shadow-sm);
 }
 
 .social-btn:hover {
     background: var(--bg-card);
+    text-decoration: none;
+    color: var(--text-primary);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
 }
 
 .form-footer {
@@ -335,6 +366,25 @@ body {
 
 .back-home a:hover {
     color: var(--text-primary);
+}
+
+/* Polished message styles (used in pages) */
+.error-message {
+    background: #fff4f4;
+    color: #b42318;
+    padding: 12px 14px;
+    border: 1px solid #ffd5d5;
+    border-radius: 10px;
+    margin-bottom: 16px;
+}
+
+.success-message {
+    background: #eefcef;
+    color: #146c2e;
+    padding: 12px 14px;
+    border: 1px solid #c9f0d0;
+    border-radius: 10px;
+    margin-bottom: 16px;
 }
 
 @media (max-width: 1024px) {
